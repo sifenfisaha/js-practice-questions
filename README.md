@@ -365,6 +365,381 @@ Transactions after adding coffee: 6
 
 ---
 
+# Part 2 — Harder Set (Questions 11–20)
+
+These 10 questions are **a step up** from the first set. They still build on the 15 core concepts above, but each one adds **new, slightly harder JavaScript**. Same rules: plain JavaScript only, run with `node yourfile.js`, and your `console.log()` output must match the **Expected Output** exactly.
+
+**New concepts introduced in this set:**
+
+| #  | Concept                                                        |
+|----|---------------------------------------------------------------|
+| 16 | Array `.sort()` with a compare function (`(a, b) => a - b`)    |
+| 17 | Array `.find()` — get the first matching element              |
+| 18 | Array `.some()` and `.every()` — boolean checks over an array |
+| 19 | Array `.forEach()` with an index                              |
+| 20 | Ternary operator (`cond ? a : b`), including chained ternaries |
+| 21 | `Object.keys()`, `Object.values()`, `Object.entries()`        |
+| 22 | Nested data (arrays inside objects, objects inside arrays)    |
+| 23 | `Set` — collecting unique values                              |
+| 24 | `Map` — key/value counting and lookups                        |
+| 25 | String `.split()` and `.join()`                               |
+| 26 | Building an object/group with `.reduce()` (grouping)          |
+| 27 | `Math.max`, `Math.min`, `Math.round` (with spread: `Math.max(...arr)`) |
+| 28 | Optional chaining `?.` and nullish coalescing `??`            |
+
+---
+
+## Question 11 — Employee Salary Sorter (Person 1)
+
+**Scenario:** You are ranking employees by salary and summarizing pay by department.
+
+**Step-by-step requirements:**
+
+1. Create a `const` array `employees`. Each is an **object** with `name` (string), `salary` (number), and `dept` (string). Add exactly these 5:
+   - `"Abel"`, `8000`, `"eng"`
+   - `"Sara"`, `12000`, `"sales"`
+   - `"Kal"`, `9500`, `"eng"`
+   - `"Dawit"`, `7000`, `"sales"`
+   - `"Marta"`, `15000`, `"eng"`
+2. Write a **regular function** `tier(salary)` that uses a **chained ternary** to return `"senior"` if salary is `>= 12000`, `"mid"` if `>= 9000`, else `"junior"`.
+3. Write an **arrow function** `format` that uses **object destructuring** to pull out `name`, `salary`, and `dept`, and returns a **template literal** like `` `MARTA (eng) — 15000 birr — senior` `` (name `.toUpperCase()`).
+4. Make a **sorted copy** with the **spread operator** and `.sort((a, b) => b.salary - a.salary)` (highest first — do **not** mutate the original). `.map()` it through `format` and print each line with a **`for...of` loop**.
+5. Use `.find()` to get the first employee earning **more than** `10000` and print `` `Top earner: ${top.name}` ``.
+6. Use `.some()` to check if anyone earns under `8000`, and `.every()` to check if everyone earns over `5000`. Print both booleans.
+7. Use `.reduce()` to build an **object** `byDept` that totals salary per department. Loop it with `Object.entries()` and a **`for...of` loop**, printing `` `ENG total: 32500 birr` `` (dept `.toUpperCase()`).
+8. Use `Math.max(...)` with a spread of all salaries to print the highest salary.
+
+**Expected Output:**
+
+```
+MARTA (eng) — 15000 birr — senior
+SARA (sales) — 12000 birr — senior
+KAL (eng) — 9500 birr — mid
+ABEL (eng) — 8000 birr — junior
+DAWIT (sales) — 7000 birr — junior
+Top earner: Marta
+Anyone under 8000: true
+Everyone over 5000: true
+ENG total: 32500 birr
+SALES total: 19000 birr
+Highest salary: 15000 birr
+```
+
+---
+
+## Question 12 — Quiz Score Analyzer (Person 2)
+
+**Scenario:** You are grading a multiple-choice quiz by comparing each student's answers to a key.
+
+**Step-by-step requirements:**
+
+1. Create a `const` array `answers` (the answer key): `["A", "C", "B", "D", "A"]`.
+2. Create a `const` array `students`. Each is an **object** with `name` (string) and `picks` (an **array** of answer strings — this is **nested data**). Add exactly these 3:
+   - `"abel"`, picks `["A", "C", "B", "D", "A"]`
+   - `"sara"`, picks `["A", "B", "B", "D", "C"]`
+   - `"kal"`, picks `["A", "C", "A", "D", "A"]`
+3. Write a **regular function** `grade(correct, total)` that computes the percentage with `Math.round((correct / total) * 100)` and uses a **ternary** to return `"PASS"` if the percentage is `>= 80`, else `"FAIL"`.
+4. Write an **arrow function** `scoreOf(picks)` that uses `.reduce()` to count how many picks match `answers` at the same index (compare `pick === answers[i]`).
+5. Use `.map()` with **object destructuring** to turn each student into `{ name, correct, verdict }`.
+6. Loop the results with a **`for...of` loop** and print `` `ABEL: 5/5 → PASS` `` (name `.toUpperCase()`).
+7. Use `.filter()` to count how many passed and print `` `Passed: 2 of 3` ``.
+8. Use `.reduce()` to find the student with the most correct answers and print `` `Best score: ABEL with 5` `` (name `.toUpperCase()`).
+9. Use `.every()` to confirm every student answered all questions (`picks.length === answers.length`) and print the boolean.
+
+**Expected Output:**
+
+```
+ABEL: 5/5 → PASS
+SARA: 3/5 → FAIL
+KAL: 4/5 → PASS
+Passed: 2 of 3
+Best score: ABEL with 5
+All answered every question: true
+```
+
+---
+
+## Question 13 — Recipe Ingredient Combiner (Person 3)
+
+**Scenario:** You are merging several recipes into one shopping list and finding shared ingredients.
+
+**Step-by-step requirements:**
+
+1. Create a `const` array `recipes`. Each is an **object** with `name` (string) and `ingredients` (an **array** of strings — **nested data**). Add exactly these 3:
+   - `"pancakes"`, `["flour", "milk", "egg"]`
+   - `"omelette"`, `["egg", "cheese", "milk"]`
+   - `"toast"`, `["bread", "butter"]`
+2. Write an **arrow function** `format` using **object destructuring** that returns `` `PANCAKES: flour, milk, egg` `` — use `.join(", ")` on the ingredients and `.toUpperCase()` on the name. `.map()` and print each with a **`for...of` loop**.
+3. Use `.reduce()` with the **spread operator** to flatten all ingredient arrays into one array `allIngredients`.
+4. Build a **`Set`** from `allIngredients` and spread it back into an array `unique`. Print `` `Unique ingredients: 6` `` using `.length`.
+5. Print a sorted shopping list: `` `Shopping list: bread, butter, ...` `` using `.sort()` then `.join(", ")`.
+6. Build a **`Map`** counting how many times each ingredient appears across recipes. Then get its `.entries()`, `.filter()` for counts `> 1`, and print each shared one as `` `milk used in 2 recipes` ``.
+7. Use `.filter()` with `.includes("egg")` to count recipes that use egg and print `` `Recipes with egg: 2` ``.
+
+**Expected Output:**
+
+```
+PANCAKES: flour, milk, egg
+OMELETTE: egg, cheese, milk
+TOAST: bread, butter
+Unique ingredients: 6
+Shopping list: bread, butter, cheese, egg, flour, milk
+milk used in 2 recipes
+egg used in 2 recipes
+Recipes with egg: 2
+```
+
+---
+
+## Question 14 — Gym Class Scheduler (Person 4)
+
+**Scenario:** You are printing a gym timetable sorted by time and grouped by part of day.
+
+**Step-by-step requirements:**
+
+1. Create a `const` array `classes`. Each is an **object** with `name` (string), `hour` (0–23), `capacity` (number), and `booked` (number). Add exactly these 4:
+   - `"yoga"`, hour `9`, capacity `20`, booked `18`
+   - `"spin"`, hour `18`, capacity `15`, booked `15`
+   - `"pilates"`, hour `12`, capacity `12`, booked `5`
+   - `"boxing"`, hour `7`, capacity `10`, booked `9`
+2. Write a **regular function** `slot(hour)` that uses a **chained ternary**: `"morning"` if `hour < 12`, `"afternoon"` if `hour < 17`, else `"evening"`.
+3. Write an **arrow function** `seatsLeft` that uses **object destructuring** to return `capacity - booked`.
+4. Write an **arrow function** `format(cls)` that uses a **ternary** on the seats left: if `0` show `"FULL"`, otherwise `` `${left} seats` ``. Return `` `YOGA @ 9:00 (morning) — 2 seats` `` (name `.toUpperCase()`).
+5. Make a **sorted copy** (spread + `.sort((a, b) => a.hour - b.hour)`, earliest first), `.map()` through `format`, and print each with a **`for...of` loop**.
+6. Use `.filter()` to count classes with space left (`seatsLeft > 0`) and print `` `Classes with space: 3` ``.
+7. Use `.some()` to check if any class is full (`seatsLeft === 0`) and print the boolean.
+8. Use `.reduce()` to print total bookings across all classes.
+9. Use `.reduce()` to build an **object** grouping class **names** by `slot(hour)`, then print each group with `Object.entries()`, a **`for...of` loop**, and `.join(", ")` — like `` `morning: yoga, boxing` ``.
+
+**Expected Output:**
+
+```
+BOXING @ 7:00 (morning) — 1 seats
+YOGA @ 9:00 (morning) — 2 seats
+PILATES @ 12:00 (afternoon) — 7 seats
+SPIN @ 18:00 (evening) — FULL
+Classes with space: 3
+Any full classes: true
+Total bookings: 47
+morning: yoga, boxing
+evening: spin
+afternoon: pilates
+```
+
+---
+
+## Question 15 — Online Order Grouping (Person 5)
+
+**Scenario:** You are grouping shop orders by category and summarizing each group.
+
+**Step-by-step requirements:**
+
+1. Create a `const` array `orders`. Each is an **object** with `item` (string), `category` (string), and `price` (number). Add exactly these 5:
+   - `"laptop"`, `"tech"`, `45000`
+   - `"mouse"`, `"tech"`, `800`
+   - `"shirt"`, `"clothing"`, `600`
+   - `"novel"`, `"books"`, `350`
+   - `"jeans"`, `"clothing"`, `1200`
+2. Write an **arrow function** `format` with **object destructuring** returning `` `LAPTOP [tech] — 45000 birr` `` (item `.toUpperCase()`). `.map()` and print each with a **`for...of` loop**.
+3. Use `.reduce()` to build an **object** `grouped` where each key is a category and the value is an **array** of the orders in it (**nested data**).
+4. Loop `grouped` with `Object.entries()` and a **`for...of` loop**. For each category, use `.reduce()` on its items to total the price, and print `` `TECH: 2 items, 45800 birr` `` (category `.toUpperCase()`).
+5. Use `Object.keys()` on `grouped`, `.sort()` it, and print `` `Categories: books, clothing, tech` `` with `.join(", ")`.
+6. Use `.reduce()` to find the single most expensive order and print `` `Most expensive: laptop (45000 birr)` ``.
+7. Use `.filter()` to count orders under `1000` birr and print `` `Under 1000 birr: 3` ``.
+
+**Expected Output:**
+
+```
+LAPTOP [tech] — 45000 birr
+MOUSE [tech] — 800 birr
+SHIRT [clothing] — 600 birr
+NOVEL [books] — 350 birr
+JEANS [clothing] — 1200 birr
+TECH: 2 items, 45800 birr
+CLOTHING: 2 items, 1800 birr
+BOOKS: 1 items, 350 birr
+Categories: books, clothing, tech
+Most expensive: laptop (45000 birr)
+Under 1000 birr: 3
+```
+
+---
+
+## Question 16 — Country Population Ranking (Person 6)
+
+**Scenario:** You are building a ranked population table.
+
+**Step-by-step requirements:**
+
+1. Create a `const` array `countries`. Each is an **object** with `name` (string), `millions` (number), and `continent` (string). Add exactly these 5:
+   - `"ethiopia"`, `126`, `"africa"`
+   - `"kenya"`, `54`, `"africa"`
+   - `"japan"`, `125`, `"asia"`
+   - `"france"`, `68`, `"europe"`
+   - `"egypt"`, `111`, `"africa"`
+2. Write an **arrow function** `format(country, rank)` using **object destructuring** that returns `` `#1 ETHIOPIA — 126M (africa)` `` (name `.toUpperCase()`).
+3. Make a **sorted copy** (spread + `.sort((a, b) => b.millions - a.millions)`, biggest first). Use **`.forEach()` with its index** to print each line, passing `i + 1` as the rank.
+4. Read the first and last of the sorted array by index and print `` `Biggest: ETHIOPIA, Smallest: KENYA` `` (names `.toUpperCase()`).
+5. Use `.filter()` to get African countries, `.reduce()` to total their population, and print `` `African countries: 3, total 291M` ``.
+6. Use `.map()` + a **`Set`** to collect the distinct continents, spread to an array, `.sort()`, and print with `.join(", ")`.
+7. Use `.reduce()` + `Math.round()` to print the average population as `` `Average population: 97M` ``.
+
+**Expected Output:**
+
+```
+#1 ETHIOPIA — 126M (africa)
+#2 JAPAN — 125M (asia)
+#3 EGYPT — 111M (africa)
+#4 FRANCE — 68M (europe)
+#5 KENYA — 54M (africa)
+Biggest: ETHIOPIA, Smallest: KENYA
+African countries: 3, total 291M
+Continents covered: africa, asia, europe
+Average population: 97M
+```
+
+---
+
+## Question 17 — Game Leaderboard (Person 7)
+
+**Scenario:** You are ranking players by kill/death ratio.
+
+**Step-by-step requirements:**
+
+1. Create a `const` array `matches`. Each is an **object** with `player` (string), `kills` (number), and `deaths` (number). Add exactly these 4:
+   - `"abel"`, kills `12`, deaths `4`
+   - `"sara"`, kills `20`, deaths `5`
+   - `"kal"`, kills `8`, deaths `8`
+   - `"dawit"`, kills `15`, deaths `3`
+2. Write a **regular function** `ratio(kills, deaths)` that returns `kills` when `deaths === 0` (ternary), otherwise `kills / deaths` rounded to 2 decimals with `Math.round(x * 100) / 100`.
+3. Write an **arrow function** `rank(kd)` using a **chained ternary**: `"S"` if `kd >= 4`, `"A"` if `kd >= 2`, else `"B"`.
+4. Use `.map()` with **object destructuring** to build `{ player, kd, tier }` for each match.
+5. `.sort((a, b) => b.kd - a.kd)` the stats (highest K/D first), then use **`.forEach()` with its index** to print `` `1. DAWIT — K/D 5 — Tier S` `` (player `.toUpperCase()`).
+6. Print the champion (first after sorting) as `` `Champion: DAWIT` `` (`.toUpperCase()`).
+7. Use `.filter()` to count S-tier players and print `` `S-tier players: 2` ``.
+8. Use `.reduce()` to total kills and print it.
+9. Use `.some()` to check if anyone had `3` or fewer deaths and print the boolean.
+
+**Expected Output:**
+
+```
+1. DAWIT — K/D 5 — Tier S
+2. SARA — K/D 4 — Tier S
+3. ABEL — K/D 3 — Tier A
+4. KAL — K/D 1 — Tier B
+Champion: DAWIT
+S-tier players: 2
+Total kills: 55
+Someone had 3 or fewer deaths: true
+```
+
+---
+
+## Question 18 — Expense Category Tracker (Person 8)
+
+**Scenario:** You are summarizing personal spending by tag using a `Map`.
+
+**Step-by-step requirements:**
+
+1. Create a `const` array `expenses`. Each is an **object** with `note` (string), `amount` (number), and `tag` (string). Add exactly these 5:
+   - `"lunch"`, `150`, `"food"`
+   - `"taxi"`, `90`, `"transport"`
+   - `"dinner"`, `220`, `"food"`
+   - `"bus"`, `30`, `"transport"`
+   - `"movie"`, `120`, `"fun"`
+2. Write a **regular function** `level(amount)` using a **chained ternary**: `"big"` if `>= 200`, `"medium"` if `>= 100`, else `"small"`.
+3. Write an **arrow function** `format` with **object destructuring** returning `` `LUNCH — 150 birr [food] (medium)` `` (note `.toUpperCase()`). `.map()` and print each with a **`for...of` loop**.
+4. Build a **`Map`** `totals` that sums `amount` per `tag` (loop with **`for...of`** and destructuring).
+5. Turn the map into an array with `[...totals.entries()]`, `.sort((a, b) => b[1] - a[1])` (biggest total first), and print each as `` `food: 370 birr` `` with a **`for...of` loop**.
+6. Use `.reduce()` to print the grand total spent.
+7. Read the first row of the sorted array with **array destructuring** (`const [topTag, topSum] = rows[0]`) and print `` `Biggest category: food (370 birr)` ``.
+8. Use `.filter()` to count `"big"` expenses and print `` `Big expenses: 1` ``.
+
+**Expected Output:**
+
+```
+LUNCH — 150 birr [food] (medium)
+TAXI — 90 birr [transport] (small)
+DINNER — 220 birr [food] (big)
+BUS — 30 birr [transport] (small)
+MOVIE — 120 birr [fun] (medium)
+food: 370 birr
+transport: 120 birr
+fun: 120 birr
+Total spent: 610 birr
+Biggest category: food (370 birr)
+Big expenses: 1
+```
+
+---
+
+## Question 19 — Word Frequency Counter (Person 9)
+
+**Scenario:** You are counting how often each word appears in a sentence.
+
+**Step-by-step requirements:**
+
+1. Create a `const` string `text = "the cat sat on the mat the cat ran"`.
+2. Use `.split(" ")` to make an array `words`. Print `` `Total words: 9` `` with `.length`.
+3. Use `.reduce()` to build an **object** `freq` mapping each word to its count.
+4. Turn it into rows with `Object.entries()` and `.sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))` — highest count first, ties broken alphabetically.
+5. Print each row as `` `THE → 3` `` (word `.toUpperCase()`) with a **`for...of` loop**.
+6. Use `Object.keys()` to print `` `Unique words: 6` ``.
+7. Read the first row with **array destructuring** and print `` `Most common: the (3 times)` ``.
+8. Use `.filter()` for counts `> 1`, `.map()` to just the words, and print `` `Repeated words: the, cat` `` with `.join(", ")`.
+
+**Expected Output:**
+
+```
+Total words: 9
+THE → 3
+CAT → 2
+MAT → 1
+ON → 1
+RAN → 1
+SAT → 1
+Unique words: 6
+Most common: the (3 times)
+Repeated words: the, cat
+```
+
+---
+
+## Question 20 — Product Inventory (Person 10)
+
+**Scenario:** You are flagging low-stock products in a small shop.
+
+**Step-by-step requirements:**
+
+1. Create a `const` array `inventory`. Each is an **object** with `sku` (string), `name` (string), `stock` (number), and `restock` (number — the reorder threshold). Add exactly these 4:
+   - `"A1"`, `"pen"`, stock `40`, restock `10`
+   - `"B2"`, `"notebook"`, stock `5`, restock `10`
+   - `"C3"`, `"eraser"`, stock `0`, restock `20`
+   - `"D4"`, `"ruler"`, stock `25`, restock `10`
+2. Write a **regular function** `status(stock, restock)`: use `if / else` to return `"OUT"` when `stock === 0`, otherwise a **ternary** returning `"LOW"` if `stock <= restock` else `"OK"`.
+3. Write an **arrow function** `format` with **object destructuring** returning `` `PEN: 40 in stock — OK` `` (name `.toUpperCase()`). `.map()` and print each with a **`for...of` loop**.
+4. Use `.filter()` for items where `stock <= restock`, `.map()` to their names, and print `` `Items to restock: notebook, eraser` `` with `.join(", ")`.
+5. Use `.reduce()` to print total units in stock.
+6. Use `.find()` to get the first out-of-stock item, then print its name using **optional chaining** and **nullish coalescing**: `` `First out of stock: ${outOfStock?.name ?? "none"}` ``.
+7. Use `.every()` to check if everything has `stock > 0` and print the boolean.
+8. Use `.reduce()` to find the item with the lowest stock and print `` `Lowest stock: eraser (0)` ``.
+
+**Expected Output:**
+
+```
+PEN: 40 in stock — OK
+NOTEBOOK: 5 in stock — LOW
+ERASER: 0 in stock — OUT
+RULER: 25 in stock — OK
+Items to restock: notebook, eraser
+Total units: 70
+First out of stock: eraser
+Everything in stock: false
+Lowest stock: eraser (0)
+```
+
+---
+
 ## Grading / Self-Check (same for everyone)
 
 Your solution is complete when:
