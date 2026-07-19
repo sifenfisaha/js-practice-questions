@@ -5,6 +5,7 @@
 - Everything can be built with **plain JavaScript only** — no HTML, no libraries, no frameworks.
 - Run your file with Node.js: `node yourfile.js` (or paste it into the browser console).
 - Your program must print output with `console.log()` that matches the **Expected Output** shown under each question.
+- **Stuck?** Fully commented reference solutions for every question (Part 1 and Part 2) live in the [`answers/`](answers/) directory — try it yourself first, then compare.
 
 **The 15 concepts every question uses:**
 
